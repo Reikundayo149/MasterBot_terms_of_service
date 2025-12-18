@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     yearElement.textContent = new Date().getFullYear();
   }
 
+  // お知らせの管理
+  const announcementsList = document.getElementById('announcements-list');
+  if (announcementsList) {
+    loadAnnouncements();
+  }
+
   // 利用規約同意ボタン
   const agreeCheckbox = document.getElementById('agree-checkbox');
   const agreeButton = document.getElementById('agree-button');
@@ -59,3 +65,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// お知らせの読み込みと表示
+function loadAnnouncements() {
+  const announcementsList = document.getElementById('announcements-list');
+  if (!announcementsList) return;
+
+  // お知らせデータ（実際の運用ではサーバーから取得することを推奨）
+  const announcements = [
+    {
+      date: '2025-12-18',
+      title: '利用規約の更新',
+      content: '第1条の規約変更通知方法を明確にしました。詳細は<a href="terms.html#section1">利用規約</a>をご確認ください。',
+      type: 'update'
+    }
+    // さらにお知らせを追加する場合はここに追加
+  ];
+
+  if (announcements.length === 0) {
+    announcementsList.innerHTML = '<p style="color:#94a3b8;text-align:center">最新のお知らせはありません</p>';
+    return;
+  }
+
+  announcementsList.innerHTML = announcements.map(item => `
+    <div class="announcement-item ${getAnnouncementClass(item.type)}">
+      <div class="date">${formatDate(item.date)}</div>
+      <div class="title">${item.title}</div>
+      <div class="content">${item.content}</div>
+    </div>
+  `).join('');
+}
+
+// お知らせの種類からクラスを取得
+function getAnnouncementClass(type) {
+  switch (type) {
+    case 'important':
+      return 'important';
+    case 'success':
+      return 'success';
+    default:
+      return '';
+  }
+}
+
+// 日付フォーマット
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}年${month}月${day}日`;
+}
